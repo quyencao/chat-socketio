@@ -1,0 +1,66 @@
+<div class="container-fluid">
+  <div class="animated fadeInRight">
+    <!--<div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <strong>Chat room </strong>
+                </div>
+            </div>
+        </div>
+    </div>-->
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="ibox chat-view">
+          <!--<div class="ibox-title">
+              <small class="pull-right text-muted">Last message:  Mon Jan 26 2015 - 18:39:23</small> Chat room panel
+          </div>-->
+          <div class="ibox-content">
+            <div class="row">
+              <div class="col-md-9 ">
+                <div class="chat-discussion">
+
+                  <div class="chat-message right" ng-repeat="message in messages">
+                    <img class="message-avatar" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+                    <div class="message">
+                      <a class="message-author" href="#"> {{ message.from }} </a>
+                      <span class="message-date">{{ message.createdAt }} </span>
+                      <span class="message-content">{{ message.message }}</span>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+              <div class="col-md-3">
+                <div class="chat-users">
+
+
+                  <div class="users-list">
+                    <div class="chat-user" ng-repeat="user in users">
+                      <img class="chat-avatar" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+                      <div class="chat-user-name">
+                        <a href="#">{{ user.username }}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Enter message text and press enter" ng-model="message"
+                         ng-keypress="sendMessageEnter($event)" autofocus>
+                  <span class="input-group-btn">
+                    <button class="btn btn-info" type="button" ng-click="sendMessage()">Send!</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
