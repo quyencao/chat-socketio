@@ -53,15 +53,37 @@ io.on('connection', function(socket) {
 
   socket.on('join', function (data) {
     socket.room = data.room;
-    var userObj = {
-      username: data.username,
-      id: socket.id,
-      room: data.room
-    };
 
-    users.push(userObj);
+    var userExist = users.filter(function (user) {
+        return user.id == socket.id;
+    });
 
-    socket.emit('new-user', userObj);
+    if(userExist.length === 0) {
+        var userObj = {
+            username: data.username,
+            id: socket.id,
+            room: data.room
+        };
+
+        users.push(userObj);
+
+        socket.emit('new-user', userObj);
+    } else {
+        var userObj = userExist[0];
+        var room = userObj.room;
+        userObj.username = data.username;
+        userObj.room = data.room;
+
+        var userInRoom = users.filter(function (user) {
+            return user.room == room;
+        });
+
+        io.in(room).emit('all-users', userInRoom);
+
+        socket.emit('new-user', userObj);
+    }
+
+    console.log(users);
 
     socket.join(data.room);
 

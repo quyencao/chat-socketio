@@ -5,9 +5,9 @@
     .module('app')
     .controller('MainCtrl', MainCtrl);
 
-  MainCtrl.$inject = ['$scope', '$localStorage', 'socket', 'lodash'];
+  MainCtrl.$inject = ['$scope', '$localStorage', 'socket'];
 
-  function MainCtrl($scope, $localStorage, socket, lodash) {
+  function MainCtrl($scope, $localStorage, socket) {
 
       $scope.users = [];
       $scope.user = $localStorage.user;
@@ -25,6 +25,7 @@
       });
 
       socket.on('all-users', function (data) {
+        console.log(data);
         $scope.users = data.filter(function (user) {
            return user.id !== $scope.user.id;
         });

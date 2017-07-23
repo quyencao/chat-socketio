@@ -30,6 +30,7 @@
 
       socket.on('new-user', function (data) {
         $localStorage.user = data;
+        console.log('here');
         $location.path('/main');
       });
   }
