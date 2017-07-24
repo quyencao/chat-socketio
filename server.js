@@ -4,8 +4,16 @@ var path = require('path');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var mysql = require('mysql');
 
-var port = 8080;
+var con = mysql.createConnection({
+   host: 'localhost',
+   user: 'root',
+   password: '',
+   database: 'chat'
+});
+
+var port = 3000;
 var users = [];
 var messages = [];
 var rooms = ['Html', 'Javascript', 'Angular', 'PHP'];
@@ -16,11 +24,35 @@ io.on('connection', function(socket) {
   console.log('new connection made');
 
   socket.on('new-room', function (data) {
+
+     var room = { name: data.room };
+
+     con.query('INSERT INTO rooms SET ?', room, function(err, res) {
+         if(err) {
+             console.log(err);
+         }
+     });
+
      rooms.unshift(data.room);
   });
 
   socket.on('all-rooms', function () {
-     socket.emit('all-rooms-received', rooms);
+
+      con.query('SELECT * FROM rooms', function (err, rows) {
+          if(err) {
+              console.log(err);
+          }
+          console.log('Data received\n');
+
+          rooms = rows.map(function (row) {
+              return row.name;
+          });
+
+          console.log(rooms);
+
+          socket.emit('all-rooms-received', rooms);
+      });
+
   });
 
   socket.on('all-users', function (data) {
@@ -40,6 +72,7 @@ io.on('connection', function(socket) {
 
   socket.on('send-message', function (data) {
      var newMessage = {
+         id: socket.id,
          from: data.from,
          message: data.message,
          room: data.room,
@@ -83,7 +116,7 @@ io.on('connection', function(socket) {
         socket.emit('new-user', userObj);
     }
 
-    console.log(users);
+    // console.log(users);
 
     socket.join(data.room);
 

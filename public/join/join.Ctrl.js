@@ -17,7 +17,7 @@
 
       socket.on('all-rooms-received', function (data) {
          $scope.rooms = data;
-         $scope.room = $scope.rooms[0];
+         $scope.room = $scope.rooms[$scope.rooms.length - 1];
       });
 
       $scope.join = function () {
