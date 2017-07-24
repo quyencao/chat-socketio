@@ -1,16 +1,18 @@
-<div class="row marketing">
-    <div class="col-md-12">
-        <div class="panel panel-default panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title">New Room</h3>
-            </div>
-            <form class="panel-body ng-pristine ng-valid" ng-submit="createRoom()" novalidate>
-                <div class="form-group">
-                    <label for="room">Room</label>
-                    <input type="text" class="form-control" id="room" placeholder="New Room" ng-model="room">
+<div class="container">
+    <div class="row marketing">
+        <div class="col-md-12">
+            <div class="panel panel-default panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">New Room</h3>
                 </div>
-                <input type="submit" class="btn btn-warning btn-block" value="Create New Room">
-            </form>
+                <form class="panel-body ng-pristine ng-valid" ng-submit="createRoom()" novalidate>
+                    <div class="form-group">
+                        <label for="room">Room</label>
+                        <input type="text" class="form-control" id="room" placeholder="New Room" ng-model="room">
+                    </div>
+                    <input type="submit" class="btn btn-warning btn-block" value="Create New Room">
+                </form>
+            </div>
         </div>
     </div>
 </div>
