@@ -8,7 +8,7 @@
   JoinCtrl.$inject = ['$location', '$scope', '$localStorage', 'socket'];
 
   function JoinCtrl($location, $scope, $localStorage, socket) {
-      $scope.username = '';
+      $scope.username = $localStorage.user.username;
       $scope.password = '';
       $scope.room = '';
       $scope.rooms = [];
@@ -23,7 +23,6 @@
       $scope.join = function () {
           socket.emit('join', {
              username: $scope.username,
-              password: $scope.password,
              room: $scope.room
           });
       };

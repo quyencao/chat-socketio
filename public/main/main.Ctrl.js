@@ -22,7 +22,7 @@
 
       socket.on('all-messages-received', function (data) {
          $scope.messages = data;
-         console.log($scope.messages);
+         // console.log($scope.messages);
       });
 
       socket.on('all-users', function (data) {
@@ -32,12 +32,7 @@
         });
       });
 
-      socket.on('message-received', function (data) {
-        $scope.messages.push(data);
-      });
-
       $scope.sendMessage = function () {
-          console.log($scope.messages);
           if($scope.message.trim() === '') {
               return;
           }

@@ -206,8 +206,6 @@ io.on('connection', function(socket) {
   });
 
   socket.on('send-message', function (data) {
-      console.log('BEFORE _______________________');
-      console.log(messages);
      var newMessage = {
          id: socket.id,
          from: data.from,
@@ -218,10 +216,11 @@ io.on('connection', function(socket) {
 
      messages.push(newMessage);
 
-      console.log('AFTER _______________________');
-      console.log(messages);
-
-     io.to(data.room).emit('message-received', newMessage);
+     var messagesInRoom = messages.filter(function (message) {
+         return message.room === data.room;
+     });
+      
+     io.to(data.room).emit('all-messages-received', messagesInRoom);
   });
 
   socket.on('join', function (data) {
