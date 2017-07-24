@@ -21,15 +21,6 @@
       });
 
       socket.on('all-messages-received', function (data) {
-         // data.forEach(function (message) {
-         //     if(message.id === $scope.user.id) {
-         //         message.direction = 'left';
-         //         message.messageClass = 'message-me';
-         //     } else {
-         //         message.direction = 'right';
-         //         message.messageClass = 'message';
-         //     }
-         // });
          $scope.messages = data;
          console.log($scope.messages);
       });
@@ -42,13 +33,6 @@
       });
 
       socket.on('message-received', function (data) {
-        // if(data.id === $scope.user.id) {
-        //     data.direction = 'left';
-        //     data.messageClass = 'message-me';
-        // } else {
-        //     data.direction = 'right';
-        //     data.messageClass = 'message';
-        // }
         $scope.messages.push(data);
       });
 
