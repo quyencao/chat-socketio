@@ -23,14 +23,15 @@
       $scope.join = function () {
           socket.emit('join', {
              username: $scope.username,
-             password: $scope.password,
+              password: $scope.password,
              room: $scope.room
           });
       };
 
       socket.on('new-user', function (data) {
         $localStorage.user = data;
-        console.log('here');
+        // console.log('HREREEEE');
+        // console.log(data);
         $location.path('/main');
       });
   }

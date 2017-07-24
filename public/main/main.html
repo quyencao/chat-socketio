@@ -11,7 +11,7 @@
               <div class="col-md-9 ">
                 <div class="chat-discussion" scroll-glue-bottom="glued">
 
-                  <div ng-repeat="message in messages">
+                  <div ng-repeat="message in messages track by $index">
                     <div class="chat-message right" ng-if="message.id !== user.id">
                       <img class="message-avatar" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
                       <div class="message">

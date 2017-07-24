@@ -5,6 +5,9 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var mysql = require('mysql');
+var bodyParser = require('body-parser');
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcryptjs');
 
 var con = mysql.createConnection({
    host: 'localhost',
@@ -19,10 +22,138 @@ var messages = [];
 var rooms = ['Html', 'Javascript', 'Angular', 'PHP'];
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.get('/join', authenticate, function (req, res) {
+    console.log(req.token);
+    res.sendFile(__dirname + '/public/index.html');
+});
+
+app.get('/main', authenticate, function (req, res) {
+    res.sendFile(__dirname + '/public/index.html');
+});
 
 app.get('*', function (req, res) {
     res.sendFile(__dirname + '/public/index.html');
 });
+
+app.post('/register', function (req, res) {
+    con.query('SELECT * FROM users WHERE email = ?',
+        [req.body.email], function (err, row) {
+            if(err) {
+                console.log(err);
+            }
+
+            if(row.length > 0) {
+                res.json({
+                    type: 'ERR',
+                    message: 'Email đã tồn tại'
+                });
+            } else {
+                bcrypt.genSalt(10, function (err, salt) {
+                   bcrypt.hash(req.body.password, salt, function (err, hash) {
+                       var token = jwt.sign({
+                           username: req.body.username,
+                           email: req.body.email
+                       }, 'secretstring', {
+                           expiresIn: 15 * 60
+                       });
+
+                       var data = {
+                           username: req.body.username,
+                           email: req.body.email,
+                           password: hash,
+                           token: token
+                       };
+
+                       con.query('INSERT INTO users SET ?', data, (err, result) => {
+                           if(err) throw err;
+
+                           console.log('Last insert ID:', result.insertId);
+
+                           res.json({
+                               type: 'OK',
+                               token: token,
+                               user: {
+                                   username: req.body.username,
+                                   email: req.body.email
+                               }
+                           })
+                       });
+                   });
+                });
+
+            }
+        });
+});
+
+app.post('/login', function (req, res) {
+    console.log(req.body.email);
+    con.query('SELECT * FROM users WHERE email = ?',
+    [req.body.email], function (err, rows) {
+        if(err) {
+            res.json({
+                type: 'ERR',
+            });
+        } else {
+            var token = jwt.sign({
+                username: rows[0].username,
+                email: rows[0].email
+            }, 'secretstring', {
+                expiresIn: 15 * 60
+            });
+            if(rows.length === 1) {
+                bcrypt.compare(req.body.password, rows[0].password, function (err, result) {
+                   if(err) {
+                       res.json({
+                           type: 'ERR',
+                           data: 'Sai mật khẩu'
+                       });
+                   } else {
+                       if(result) {
+                           res.json({
+                               type: 'OK',
+                               token: token,
+                               user: {
+                                   username: rows[0].username,
+                                   email: rows[0].email
+                               }
+                           });
+                       } else {
+                           res.json({
+                               type: 'ERR',
+                               data: 'Sai mật khẩu'
+                           });
+                       }
+                   }
+                });
+            } else {
+                res.json({
+                   type: 'ERR',
+                   data: 'Sai email và mật khẩu'
+                });
+            }
+
+        }
+    });
+    console.log(req.body.password);
+});
+
+function authenticate(req, res, next) {
+    var bearerToken;
+    var bearerHeader = req.headers["authorization"];
+    console.log(bearerHeader);
+    if (typeof bearerHeader !== 'undefined') {
+        var bearer = bearerHeader.split(" ");
+        bearerToken = bearer[1];
+        req.token = bearerToken;
+        next();
+    } else {
+        // res.send(403);
+        res.redirect('/');
+    }
+}
 
 io.on('connection', function(socket) {
   console.log('new connection made');
@@ -75,6 +206,8 @@ io.on('connection', function(socket) {
   });
 
   socket.on('send-message', function (data) {
+      console.log('BEFORE _______________________');
+      console.log(messages);
      var newMessage = {
          id: socket.id,
          from: data.from,
@@ -84,6 +217,9 @@ io.on('connection', function(socket) {
      };
 
      messages.push(newMessage);
+
+      console.log('AFTER _______________________');
+      console.log(messages);
 
      io.to(data.room).emit('message-received', newMessage);
   });

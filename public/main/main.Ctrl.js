@@ -5,9 +5,9 @@
     .module('app')
     .controller('MainCtrl', MainCtrl);
 
-  MainCtrl.$inject = ['$scope', '$localStorage', 'socket'];
+  MainCtrl.$inject = ['$scope', '$localStorage', 'socket', 'Auth'];
 
-  function MainCtrl($scope, $localStorage, socket) {
+  function MainCtrl($scope, $localStorage, socket, Auth) {
 
       $scope.users = [];
       $scope.user = $localStorage.user;
@@ -37,6 +37,7 @@
       });
 
       $scope.sendMessage = function () {
+          console.log($scope.messages);
           if($scope.message.trim() === '') {
               return;
           }
