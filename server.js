@@ -242,7 +242,8 @@ io.on('connection', function(socket) {
      var userInRoom = users.filter(function (user) {
          return user.room == data.room
      });
-     socket.emit('all-users', userInRoom);
+     // socket.emit('all-users', userInRoom);
+      io.to(data.room).emit('all-users', userInRoom);
   });
 
   socket.on('all-messages', function (data) {
@@ -250,6 +251,7 @@ io.on('connection', function(socket) {
         return message.room === data.room;
      });
 
+     socket.join(data.room);
      io.in(data.room).emit('all-messages-received', messagesInRoom);
   });
 
@@ -269,6 +271,7 @@ io.on('connection', function(socket) {
          return message.room === data.room;
      });
 
+     socket.join(data.room);
      io.to(data.room).emit('all-messages-received', messagesInRoom);
   });
 

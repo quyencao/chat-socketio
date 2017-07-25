@@ -41,7 +41,7 @@
 
       socket.on('new-user', function (data) {
         User.user = data;
-        $location.path('/main');
+        $location.path('/main/' + data.room);
       });
 
       $scope.logout = function () {

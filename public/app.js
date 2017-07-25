@@ -12,7 +12,7 @@ angular
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);
     $routeProvider
-      .when('/main', {
+      .when('/main/:room', {
         templateUrl: 'main/main.html',
         controller: 'MainCtrl',
         restrictions: {
