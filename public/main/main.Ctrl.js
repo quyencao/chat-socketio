@@ -5,12 +5,12 @@
     .module('app')
     .controller('MainCtrl', MainCtrl);
 
-  MainCtrl.$inject = ['$scope', '$localStorage', 'socket', 'Auth'];
+  MainCtrl.$inject = ['$scope', '$localStorage', 'socket', 'Auth', 'User'];
 
-  function MainCtrl($scope, $localStorage, socket, Auth) {
+  function MainCtrl($scope, $localStorage, socket, Auth, User) {
 
       $scope.users = [];
-      $scope.user = $localStorage.user;
+      $scope.user = User.user;
       $scope.message = '';
       $scope.messages = [];
 
@@ -22,6 +22,7 @@
 
       socket.on('all-messages-received', function (data) {
          $scope.messages = data;
+         $scope.scrollToBottom();
          // console.log($scope.messages);
       });
 
@@ -50,6 +51,10 @@
           if(event.keyCode == 13) {
               $scope.sendMessage();
           }
+      };
+
+      $scope.scrollToBottom = function() {
+          $('#chat-discussion').animate({ scrollTop: $('#chat-discussion').prop('scrollHeight')}, 500);
       };
 
   };

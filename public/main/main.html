@@ -9,9 +9,9 @@
           <div class="ibox-content">
             <div class="row">
               <div class="col-md-9 ">
-                <div class="chat-discussion" scroll-glue-bottom="glued">
+                <div class="chat-discussion" id="chat-discussion">
 
-                  <div ng-repeat="message in messages track by $index">
+                  <div ng-repeat="message in messages">
                     <div class="chat-message right" ng-if="message.id !== user.id">
                       <img class="message-avatar" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
                       <div class="message">

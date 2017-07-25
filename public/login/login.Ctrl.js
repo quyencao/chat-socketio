@@ -1,9 +1,9 @@
 (function () {
 
     angular.module('app')
-        .controller('LoginCtrl', ['$scope', '$localStorage', '$location', 'Auth', LoginCtrl]);
+        .controller('LoginCtrl', ['$scope', '$localStorage', '$location', 'Auth', 'User', LoginCtrl]);
 
-    function LoginCtrl($scope, $localStorage, $location, Auth) {
+    function LoginCtrl($scope, $localStorage, $location, Auth, User) {
 
         $scope.email = '';
         $scope.password = '';
@@ -17,7 +17,8 @@
             Auth.login(data, function (res) {
                 if(res.data.type === 'OK') {
                     $localStorage.token = res.data.token;
-                    $localStorage.user = res.data.user;
+                    // $localStorage.user = res.data.user;
+                    User.user = res.data.user;
                     // localStorage.setItem('token', res.data.token);
                     // $location.path('/join');
                     Auth.join(function () {

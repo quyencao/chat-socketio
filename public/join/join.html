@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <div class="panel panel-default panel-primary">
         <div class="panel-heading">
-          <h3 class="panel-title">Join Chat</h3>
+          <h3 class="panel-title">Tham gia Chat</h3>
         </div>
         <form class="panel-body ng-pristine ng-valid" ng-submit="join()" novalidate>
           <h1>Xin chào {{ username }}</h1>
@@ -16,17 +16,17 @@
             <!--<input type="password" class="form-control" id="password" placeholder="Password" ng-model="password">-->
           <!--</div>-->
           <div class="form-group">
-            <label for="room">Room</label>
+            <label for="room">Chọn phòng</label>
             <select class="form-control" id="room" ng-model="room">
               <option ng-repeat="room in rooms" value="{{ room }}">{{ room }}</option>
             </select>
           </div>
           <div class="form-group">
             <div class="col-md-6">
-              <input class="btn btn-block btn-primary" type="submit" value="Join">
+              <input class="btn btn-block btn-primary" type="submit" value="Tham gia phòng">
             </div>
             <div class="col-md-6">
-              <a href="/newroom" class="btn btn-warning btn-block">Create New Room</a>
+              <a href="/newroom" class="btn btn-warning btn-block">Tạo phòng mới</a>
             </div>
           </div>
 

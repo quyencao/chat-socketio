@@ -199,10 +199,10 @@ io.on('connection', function(socket) {
 
   socket.on('all-messages', function (data) {
      var messagesInRoom = messages.filter(function (message) {
-        return message.room == data.room;
+        return message.room === data.room;
      });
 
-     socket.emit('all-messages-received', messagesInRoom);
+     io.in(data.room).emit('all-messages-received', messagesInRoom);
   });
 
   socket.on('send-message', function (data) {
@@ -219,7 +219,7 @@ io.on('connection', function(socket) {
      var messagesInRoom = messages.filter(function (message) {
          return message.room === data.room;
      });
-      
+
      io.to(data.room).emit('all-messages-received', messagesInRoom);
   });
 
