@@ -18,6 +18,13 @@ angular
         restrictions: {
           ensureAuthenticated: true,
           loginRedirect: false
+        },
+        resolve: {
+            user: function (Auth) {
+                return Auth.getUser(function (res) {
+                    return res.data;
+                });
+            }
         }
       })
       .when('/join', {

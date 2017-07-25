@@ -13,7 +13,7 @@
 
                   <div ng-repeat="message in messages">
                     <div class="chat-message right" ng-if="message.id !== user.id">
-                      <img class="message-avatar" ng-src="{{ 'upload/' + user.image }}" alt="">
+                      <img class="message-avatar" ng-src="{{ 'upload/' + message.userImage }}" alt="">
                       <div class="message">
                         <a class="message-author" href="#"> {{ message.from }} </a>
                         <span class="message-date">{{ message.createdAt }} </span>
@@ -40,7 +40,7 @@
 
                   <div class="users-list">
                     <div class="chat-user" ng-repeat="user in users">
-                      <img class="chat-avatar" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+                      <img class="chat-avatar" ng-src="{{ 'upload/' + user.image }}" alt="">
                       <div class="chat-user-name">
                         <a href="#">{{ user.username }}</a>
                       </div>

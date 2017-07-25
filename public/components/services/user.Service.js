@@ -3,15 +3,15 @@
 
     angular
         .module('app')
-        .factory('User',  User);
+        .factory('User', User);
+
     function User() {
 
         var user = {};
 
         return {
 
-            user: user
-
+            user: user,
         }
 
     };

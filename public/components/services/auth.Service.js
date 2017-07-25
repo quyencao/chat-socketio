@@ -22,6 +22,11 @@
                     .then(success)
                     .catch(error);
             },
+            getUser: function (success, error) {
+                return $http.get(baseUrl + '/user')
+                    .then(success)
+                    .catch(error);
+            },
             logout: function () {
                 delete $localStorage.token;
             }

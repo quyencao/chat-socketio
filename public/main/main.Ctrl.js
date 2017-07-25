@@ -5,12 +5,11 @@
     .module('app')
     .controller('MainCtrl', MainCtrl);
 
-  MainCtrl.$inject = ['$scope', '$localStorage', 'socket', 'Auth', 'User'];
+  MainCtrl.$inject = ['$scope', '$localStorage', 'socket', 'Auth', 'User', 'user'];
 
-  function MainCtrl($scope, $localStorage, socket, Auth, User) {
-
+  function MainCtrl($scope, $localStorage, socket, Auth, User, user) {
       $scope.users = [];
-      $scope.user = User.user;
+      $scope.user = User.user || user;
       $scope.message = '';
       $scope.messages = [];
 
@@ -41,7 +40,8 @@
           socket.emit('send-message', {
              from: $scope.user.username,
              message: $scope.message,
-             room: $scope.user.room
+             room: $scope.user.room,
+             image: $scope.user.image
           });
 
           $scope.message = '';

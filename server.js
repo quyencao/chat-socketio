@@ -46,6 +46,33 @@ app.get('/main', function (req, res) {
     res.sendFile(__dirname + '/public/index.html');
 });
 
+app.get('/user', ensureAuthenticate, function(req, res) {
+    console.log('_____________________________');
+    con.query('SELECT * FROM users WHERE token = ?',
+        [req.token], function (err, rows) {
+            if (err) {
+                res.json({
+                    type: 'ERR'
+                });
+                return;
+            }
+
+            if (rows.length === 1) {
+                res.json({
+                    email: rows[0].email,
+                    id: rows[0].id,
+                    image: rows[0].image,
+                    token: rows[0].token,
+                    username: rows[0].username
+                });
+            } else {
+                res.json({
+                    type: 'ERR'
+                });
+            }
+        });
+});
+
 app.get('*', function (req, res) {
     res.sendFile(__dirname + '/public/index.html');
 });
@@ -125,9 +152,9 @@ app.post('/login', function (req, res) {
                        });
                    } else {
                        if(result) {
-                           // // Store token
-                           // con.query('UPDATE users SET token = ? WHERE id = ?',
-                           // [token, rows[0].id], function (err, result) {});
+                           // Store token
+                           con.query('UPDATE users SET token = ? WHERE id = ?',
+                           [token, rows[0].id], function (err, result) {});
 
                            res.json({
                                type: 'OK',
@@ -159,6 +186,19 @@ app.post('/login', function (req, res) {
 });
 
 
+function ensureAuthenticate(req, res, next) {
+    var bearerToken;
+    var bearerHeader = req.headers["authorization"];
+    console.log(bearerHeader);
+    if (typeof bearerHeader !== 'undefined') {
+        var bearer = bearerHeader.split(" ");
+        bearerToken = bearer[1];
+        req.token = bearerToken;
+        next();
+    } else {
+        res.send(403);
+    }
+}
 
 /*****************************
  * Socket chat
@@ -219,7 +259,8 @@ io.on('connection', function(socket) {
          from: data.from,
          message: data.message,
          room: data.room,
-         createdAt: moment(new Date().getTime()).format('MMMM Do YYYY, h:mm:ss a')
+         createdAt: moment(new Date().getTime()).format('MMMM Do YYYY, h:mm:ss a'),
+         userImage: data.image
      };
 
      messages.push(newMessage);

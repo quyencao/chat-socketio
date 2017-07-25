@@ -12,9 +12,17 @@
       $scope.username = User.user.username;
       $scope.filePath = User.user.image || 'avatar-placeholder.png';
       $scope.id = User.user.id;
-      $scope.password = '';
       $scope.room = '';
       $scope.rooms = [];
+
+      Auth.getUser(function (res) {
+          $scope.user = res.data;
+          User.user = res.data;
+          $scope.id = User.user.id;
+          $scope.username = User.user.username;
+          $scope.filePath = User.user.image;
+      }, function () {
+      });
 
       socket.emit('all-rooms');
 
