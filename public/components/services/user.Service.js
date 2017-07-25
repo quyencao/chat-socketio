@@ -3,8 +3,7 @@
 
     angular
         .module('app')
-        .factory('User', User);
-
+        .factory('User',  User);
     function User() {
 
         var user = {};

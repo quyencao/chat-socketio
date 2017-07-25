@@ -5,10 +5,13 @@
     .module('app')
     .controller('JoinCtrl', JoinCtrl);
 
-  JoinCtrl.$inject = ['$location', '$scope', '$localStorage', 'socket', 'User', 'Auth'];
+  JoinCtrl.$inject = ['$location', '$scope', '$localStorage', 'socket', 'User', 'Auth', 'Upload'];
 
-  function JoinCtrl($location, $scope, $localStorage, socket, User, Auth) {
+  function JoinCtrl($location, $scope, $localStorage, socket, User, Auth, Upload) {
+      $scope.user = User.user;
       $scope.username = User.user.username;
+      $scope.filePath = User.user.image || 'avatar-placeholder.png';
+      $scope.id = User.user.id;
       $scope.password = '';
       $scope.room = '';
       $scope.rooms = [];
@@ -23,7 +26,8 @@
       $scope.join = function () {
           socket.emit('join', {
              username: $scope.username,
-             room: $scope.room
+             room: $scope.room,
+             image: $scope.user.image
           });
       };
 
@@ -35,6 +39,29 @@
       $scope.logout = function () {
           Auth.logout();
           $location.path('/login');
+      };
+
+      $scope.submit = function() {
+          if ($scope.form.file.$valid && $scope.file) {
+              $scope.upload($scope.file);
+          }
+      };
+
+      // upload on file select or drop
+      $scope.upload = function (file) {
+          Upload.upload({
+              url: 'http://localhost:3000/upload',
+              data: {file: file}
+          }).then(function (res) {
+              $scope.filePath = res.data.image;
+              User.user.image = res.data.image;
+              // console.log('Success ' + res.config.data.file.name + 'uploaded. Response: ' + res.data);
+          }, function (resp) {
+              // console.log('Error status: ' + resp.status);
+          }, function (evt) {
+              // var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+              // console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+          });
       };
   }
 })();

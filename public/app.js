@@ -6,7 +6,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngStorage',
-    'ngLodash'
+    'ngLodash',
+    'ngFileUpload'
   ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $locationProvider.html5Mode(true);
@@ -55,13 +56,17 @@ angular
         redirectTo: '/login'
       });
 
-      $httpProvider.interceptors.push(['$q', '$location', '$localStorage', function($q, $location, $localStorage) {
+      $httpProvider.interceptors.push(['$q', '$location', '$localStorage', 'User', function($q, $location, $localStorage, User) {
           return {
               'request': function (config) {
                   config.headers = config.headers || {};
                   if ($localStorage.token) {
                       config.headers.Authorization = 'Bearer ' + $localStorage.token;
                   }
+                  if(User.user.id) {
+                      config.headers.id = User.user.id;
+                  }
+
                   return config;
               },
               'responseError': function(response) {

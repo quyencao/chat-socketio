@@ -5,18 +5,22 @@
         <div class="panel-heading">
           <h3 class="panel-title">Tham gia Chat</h3>
         </div>
+        <div class="panel-body">
+          <form name="form">
+            Upload ảnh
+            <input type="file" ngf-select ng-model="file" name="file" ngf-pattern="'.jpg,.gif,.png'" accept="image/*"
+                 ngf-max-size="1MB"
+                 ngf-resize="{width: 50, height: 50}">
+            <input type="hidden" ng-model="id">
+            Xem trước:  <img style="width:100px;" ngf-thumbnail="file || 'upload/avatar-placeholder.png'"/>
+            <button class="btn btn-primary" type="submit" ng-click="submit()">Submit</button>
+          </form>
+        </div>
         <form class="panel-body ng-pristine ng-valid" ng-submit="join()" novalidate>
           <h1>Xin chào {{ username }}
+            <img ng-src="{{ 'upload/' + filePath }}" alt="">
             <button class="btn btn-info pull-right" ng-click="logout()">Đăng xuất</button>
           </h1>
-          <!--<div class="form-group">-->
-            <!--<label for="username">Username</label>-->
-            <!--<input type="text" class="form-control" id="username" placeholder="Username" ng-model="username">-->
-          <!--</div>-->
-          <!--<div class="form-group">-->
-            <!--<label for="password">Password</label>-->
-            <!--<input type="password" class="form-control" id="password" placeholder="Password" ng-model="password">-->
-          <!--</div>-->
           <div class="form-group">
             <label for="room">Chọn phòng</label>
             <select class="form-control" id="room" ng-model="room">

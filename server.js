@@ -8,6 +8,7 @@ var mysql = require('mysql');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
+var multer = require('multer');
 
 var con = mysql.createConnection({
    host: 'localhost',
@@ -21,10 +22,21 @@ var users = [];
 var messages = [];
 var rooms = ['Html', 'Javascript', 'Angular', 'PHP'];
 
+/*
+    Middleware
+ */
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+/*****************************
+ * Route
+ ****************************/
 app.get('/join', function (req, res) {
     console.log(req.token);
     res.sendFile(__dirname + '/public/index.html');
@@ -103,6 +115,7 @@ app.post('/login', function (req, res) {
             }, 'secretstring', {
                 expiresIn: 15 * 60
             });
+
             if(rows.length === 1) {
                 bcrypt.compare(req.body.password, rows[0].password, function (err, result) {
                    if(err) {
@@ -112,12 +125,18 @@ app.post('/login', function (req, res) {
                        });
                    } else {
                        if(result) {
+                           // // Store token
+                           // con.query('UPDATE users SET token = ? WHERE id = ?',
+                           // [token, rows[0].id], function (err, result) {});
+
                            res.json({
                                type: 'OK',
                                token: token,
                                user: {
                                    username: rows[0].username,
-                                   email: rows[0].email
+                                   email: rows[0].email,
+                                   image: rows[0].image,
+                                   id: rows[0].id
                                }
                            });
                        } else {
@@ -139,21 +158,11 @@ app.post('/login', function (req, res) {
     });
 });
 
-function authenticate(req, res, next) {
-    var bearerToken;
-    var bearerHeader = req.headers["authorization"];
-    console.log(bearerHeader);
-    if (typeof bearerHeader !== 'undefined') {
-        var bearer = bearerHeader.split(" ");
-        bearerToken = bearer[1];
-        req.token = bearerToken;
-        next();
-    } else {
-        // res.send(403);
-        res.redirect('/');
-    }
-}
 
+
+/*****************************
+ * Socket chat
+ ****************************/
 io.on('connection', function(socket) {
   console.log('new connection made');
 
@@ -233,7 +242,8 @@ io.on('connection', function(socket) {
         var userObj = {
             username: data.username,
             id: socket.id,
-            room: data.room
+            room: data.room,
+            image: data.image
         };
 
         users.push(userObj);
@@ -244,6 +254,7 @@ io.on('connection', function(socket) {
         var room = userObj.room;
         userObj.username = data.username;
         userObj.room = data.room;
+        userObj.image = data.image;
 
         var userInRoom = users.filter(function (user) {
             return user.room == room;
@@ -274,6 +285,44 @@ io.on('connection', function(socket) {
 
       io.in(socket.room).emit('all-users', userInRoom);
   });
+});
+
+/**
+ * Multer File Upload
+ */
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/upload/')
+    },
+    filename: function (req, file, cb) {
+        var datetimestamp = Date.now();
+        var filename = file.originalname.split('.');
+        var uploadFilename = filename[0] + '-' + datetimestamp + '.' + filename[1];
+        cb(null, uploadFilename);
+    }
+});
+
+var upload = multer({
+   storage: storage
+}).single('file');
+
+app.post('/upload', function (req, res) {
+   var userId = req.header('id');
+   upload(req, res, function (err) {
+       console.log(req.file);
+       if(err) {
+           res.json({ error_code: 1, err_desc: err });
+           return;
+       }
+
+       con.query('UPDATE users SET image = ? WHERE id = ?',
+       [req.file.filename, userId], function (err, result) {
+            if(err) { res.json({ error_code: 1, err_desc: err }); }
+
+            res.json({ error_code: 0, err_desc: null, image: req.file.filename });
+       });
+
+   });
 });
 
 server.listen(port, function() {
