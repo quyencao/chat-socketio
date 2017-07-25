@@ -17,17 +17,9 @@
             Auth.login(data, function (res) {
                 if(res.data.type === 'OK') {
                     $localStorage.token = res.data.token;
-                    // $localStorage.user = res.data.user;
                     User.user = res.data.user;
-                    // localStorage.setItem('token', res.data.token);
-                    // $location.path('/join');
-                    Auth.join(function () {
-                        $location.path('/join');
-                    }, function () {
-                        $location.path('/login');
-                    });
+                    $location.path('/join');
                 }
-                console.log(res);
             }, function (err) {
                 console.log(err);
             });

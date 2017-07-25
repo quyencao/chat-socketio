@@ -5,9 +5,9 @@
         .module('app')
         .factory('Auth', Auth);
 
-    Auth.$inject = ['$http'];
+    Auth.$inject = ['$http', '$localStorage'];
 
-    function Auth($http) {
+    function Auth($http, $localStorage) {
 
         var baseUrl = 'http://localhost:3000';
 
@@ -22,15 +22,8 @@
                     .then(success)
                     .catch(error);
             },
-            main: function (success, error) {
-                $http.get(baseUrl + '/main')
-                    .then(success)
-                    .catch(error);
-            },
-            join: function (success, error) {
-                $http.get(baseUrl + '/join')
-                    .then(success)
-                    .catch(error);
+            logout: function () {
+                delete $localStorage.token;
             }
         }
 

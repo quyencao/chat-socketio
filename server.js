@@ -25,12 +25,12 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/join', authenticate, function (req, res) {
+app.get('/join', function (req, res) {
     console.log(req.token);
     res.sendFile(__dirname + '/public/index.html');
 });
 
-app.get('/main', authenticate, function (req, res) {
+app.get('/main', function (req, res) {
     res.sendFile(__dirname + '/public/index.html');
 });
 
@@ -137,7 +137,6 @@ app.post('/login', function (req, res) {
 
         }
     });
-    console.log(req.body.password);
 });
 
 function authenticate(req, res, next) {
@@ -254,8 +253,6 @@ io.on('connection', function(socket) {
 
         socket.emit('new-user', userObj);
     }
-
-    // console.log(users);
 
     socket.join(data.room);
 

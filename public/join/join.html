@@ -6,7 +6,9 @@
           <h3 class="panel-title">Tham gia Chat</h3>
         </div>
         <form class="panel-body ng-pristine ng-valid" ng-submit="join()" novalidate>
-          <h1>Xin chào {{ username }}</h1>
+          <h1>Xin chào {{ username }}
+            <button class="btn btn-info pull-right" ng-click="logout()">Đăng xuất</button>
+          </h1>
           <!--<div class="form-group">-->
             <!--<label for="username">Username</label>-->
             <!--<input type="text" class="form-control" id="username" placeholder="Username" ng-model="username">-->

@@ -13,23 +13,43 @@ angular
     $routeProvider
       .when('/main', {
         templateUrl: 'main/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl',
+        restrictions: {
+          ensureAuthenticated: true,
+          loginRedirect: false
+        }
       })
       .when('/join', {
         templateUrl: 'join/join.html',
-        controller: 'JoinCtrl'
+        controller: 'JoinCtrl',
+        restrictions: {
+          ensureAuthenticated: true,
+          loginRedirect: false
+        }
       })
       .when('/newroom', {
         templateUrl: 'room/room.html',
-        controller: 'RoomCtrl'
+        controller: 'RoomCtrl',
+        restrictions: {
+          ensureAuthenticated: true,
+          loginRedirect: false
+        }
       })
       .when('/register', {
         templateUrl: 'register/register.html',
-        controller: 'RegisterCtrl'
+        controller: 'RegisterCtrl',
+        restrictions: {
+          ensureAuthenticated: false,
+          loginRedirect: true
+        }
       })
       .when('/login', {
         templateUrl: 'login/login.html',
-        controller: 'LoginCtrl'
+        controller: 'LoginCtrl',
+        restrictions: {
+          ensureAuthenticated: false,
+          loginRedirect: true
+        }
       })
       .otherwise({
         redirectTo: '/login'
@@ -52,4 +72,22 @@ angular
               }
           };
       }]);
-  });
+
+
+  })
+  .run(routeStart);
+
+    function routeStart($rootScope, $location, $localStorage , $route) {
+        $rootScope.$on('$routeChangeStart', (event, next, current) => {
+            if (next.restrictions && next.restrictions.ensureAuthenticated) {
+                if (!$localStorage.token) {
+                    $location.path('/login');
+                }
+            }
+            if (next.restrictions && next.restrictions.loginRedirect) {
+                if ($localStorage.token) {
+                    $location.path('/join');
+                }
+            }
+        });
+    }

@@ -5,9 +5,9 @@
     .module('app')
     .controller('JoinCtrl', JoinCtrl);
 
-  JoinCtrl.$inject = ['$location', '$scope', '$localStorage', 'socket', 'User'];
+  JoinCtrl.$inject = ['$location', '$scope', '$localStorage', 'socket', 'User', 'Auth'];
 
-  function JoinCtrl($location, $scope, $localStorage, socket, User) {
+  function JoinCtrl($location, $scope, $localStorage, socket, User, Auth) {
       $scope.username = User.user.username;
       $scope.password = '';
       $scope.room = '';
@@ -31,5 +31,10 @@
         User.user = data;
         $location.path('/main');
       });
+
+      $scope.logout = function () {
+          Auth.logout();
+          $location.path('/login');
+      };
   }
 })();
