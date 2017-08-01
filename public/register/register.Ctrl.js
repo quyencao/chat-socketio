@@ -1,9 +1,9 @@
 (function () {
     
     angular.module('app')
-        .controller('RegisterCtrl', ['$scope', '$localStorage', '$location', 'Auth', RegisterCtrl]);
+        .controller('RegisterCtrl', ['$scope', '$localStorage', '$location', 'Auth', 'User', RegisterCtrl]);
     
-    function RegisterCtrl($scope, $localStorage, $location, Auth) {
+    function RegisterCtrl($scope, $localStorage, $location, Auth, User) {
 
         $scope.email = '';
         $scope.username = '';
@@ -17,16 +17,11 @@
             };
 
             Auth.register(data, function (res) {
-                $localStorage.token = res.data.token;
-                User.user = res.data.user;
-                // $localStorage.user = res.data.user;
-                // localStorage.setItem('token', res.data.token);
-                Auth.join(function () {
+                if(res.data.type === 'OK') {
+                    $localStorage.token = res.data.token;
+                    User.user = res.data.user;
                     $location.path('/join');
-                }, function () {
-                    $location.path('/login');
-                });
-                console.log(res);
+                }
             }, function (err) {
                 console.log(err);
             });

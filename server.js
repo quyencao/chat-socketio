@@ -47,7 +47,6 @@ app.get('/main', function (req, res) {
 });
 
 app.get('/user', ensureAuthenticate, function(req, res) {
-    console.log('_____________________________');
     con.query('SELECT * FROM users WHERE token = ?',
         [req.token], function (err, rows) {
             if (err) {
@@ -108,8 +107,6 @@ app.post('/register', function (req, res) {
 
                        con.query('INSERT INTO users SET ?', data, (err, result) => {
                            if(err) throw err;
-
-                           console.log('Last insert ID:', result.insertId);
 
                            res.json({
                                type: 'OK',
@@ -189,7 +186,7 @@ app.post('/login', function (req, res) {
 function ensureAuthenticate(req, res, next) {
     var bearerToken;
     var bearerHeader = req.headers["authorization"];
-    console.log(bearerHeader);
+    // console.log(bearerHeader);
     if (typeof bearerHeader !== 'undefined') {
         var bearer = bearerHeader.split(" ");
         bearerToken = bearer[1];
@@ -353,7 +350,7 @@ var upload = multer({
 app.post('/upload', function (req, res) {
    var userId = req.header('id');
    upload(req, res, function (err) {
-       console.log(req.file);
+       // console.log(req.file);
        if(err) {
            res.json({ error_code: 1, err_desc: err });
            return;

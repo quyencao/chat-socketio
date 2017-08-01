@@ -11,7 +11,6 @@
       user.room = $routeParams.room;
       $scope.users = [];
       $scope.user = isEmpty(User.user) ? user : User.user;
-      console.log($scope.user);
       $scope.message = '';
       $scope.messages = [];
 
@@ -22,10 +21,8 @@
       });
 
       socket.on('all-messages-received', function (data) {
-          console.log(data);
          $scope.messages = data;
          $scope.scrollToBottom();
-         // console.log($scope.messages);
       });
 
       socket.on('all-users', function (data) {
